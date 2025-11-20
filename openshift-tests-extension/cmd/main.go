@@ -28,7 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/envtest/komega"
 
 	// If using ginkgo, import your tests here.
-	_ "github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e"
+	_ "github.com/openshift/cluster-control-plane-machine-set-operator/openshift-tests-extension/e2e"
 	"github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/framework"
 )
 

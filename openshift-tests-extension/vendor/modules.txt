@@ -183,7 +183,6 @@ github.com/openshift/api/machine/v1beta1
 ## explicit; go 1.24.0
 github.com/openshift/cluster-control-plane-machine-set-operator/pkg/machineproviders/providers/openshift/machine/v1beta1/failuredomain
 github.com/openshift/cluster-control-plane-machine-set-operator/pkg/machineproviders/providers/openshift/machine/v1beta1/providerconfig
-github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e
 github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/framework
 github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers
 # github.com/pkg/errors v0.9.1

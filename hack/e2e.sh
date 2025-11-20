@@ -17,5 +17,5 @@ if [ "$OPENSHIFT_CI" == "true" ] && [ -n "$ARTIFACT_DIR" ] && [ -d "$ARTIFACT_DI
 fi
 
 # Print the command we are going to run as Make would.
-echo ${GINKGO} ${GINKGO_ARGS} ${GINKGO_EXTRA_ARGS} ./test/e2e
-${GINKGO} ${GINKGO_ARGS} ${GINKGO_EXTRA_ARGS} ./test/e2e
+echo ${GINKGO} ${GINKGO_ARGS} ${GINKGO_EXTRA_ARGS} ./openshift-tests-extension/e2e
+${GINKGO} ${GINKGO_ARGS} ${GINKGO_EXTRA_ARGS} ./openshift-tests-extension/e2e

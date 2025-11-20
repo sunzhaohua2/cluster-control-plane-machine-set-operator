@@ -3,7 +3,10 @@ module github.com/openshift/cluster-control-plane-machine-set-operator/openshift
 go 1.24.3
 
 require (
+	github.com/onsi/ginkgo/v2 v2.27.2
+	github.com/onsi/gomega v1.38.2
 	github.com/openshift-eng/openshift-tests-extension v0.0.0-20251024155203-c498f9efe478
+	github.com/openshift/api v0.0.0-20251027215121-243758deaab1
 	github.com/openshift/cluster-control-plane-machine-set-operator v0.0.0-20251029084908-344babe6a957
 	github.com/spf13/cobra v1.10.1
 	sigs.k8s.io/controller-runtime v0.22.3
@@ -39,9 +42,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/onsi/ginkgo/v2 v2.27.2 // indirect
-	github.com/onsi/gomega v1.38.2 // indirect
-	github.com/openshift/api v0.0.0-20251027215121-243758deaab1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.22.0 // indirect
