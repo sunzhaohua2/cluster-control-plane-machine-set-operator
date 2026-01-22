@@ -25,11 +25,8 @@ import (
 	g "github.com/openshift-eng/openshift-tests-extension/pkg/ginkgo"
 	"github.com/spf13/cobra"
 
-	"sigs.k8s.io/controller-runtime/pkg/envtest/komega"
-
 	// If using ginkgo, import your tests here.
 	_ "github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e"
-	"github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/framework"
 )
 
 func main() {
@@ -50,16 +47,6 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("couldn't build extension test specs from ginkgo: %+v", err.Error()))
 	}
-
-	// Initialize framework before running tests
-	specs.AddBeforeAll(func() {
-		if err := framework.InitFramework(); err != nil {
-			panic(fmt.Sprintf("failed to initialize framework: %v", err))
-		}
-
-		komega.SetClient(framework.GlobalFramework.GetClient())
-		komega.SetContext(framework.GlobalFramework.GetContext())
-	})
 
 	ext.AddSpecs(specs)
 	extensionRegistry.Register(ext)

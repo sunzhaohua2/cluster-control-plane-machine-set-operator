@@ -32,6 +32,7 @@ import (
 
 var _ = Describe("ControlPlaneMachineSet Operator", framework.Periodic(), Label("Disruptive"), Label("Serial"), func() {
 	BeforeEach(func() {
+		InitializeTestFramework()
 		helpers.EventuallyClusterOperatorsShouldStabilise(1*time.Minute, 10*time.Minute, 10*time.Second)
 	}, OncePerOrdered)
 

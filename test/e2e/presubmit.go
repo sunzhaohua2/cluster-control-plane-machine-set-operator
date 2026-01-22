@@ -32,8 +32,9 @@ import (
 	"github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers"
 )
 
-var _ = Describe("ControlPlaneMachineSet Operator", framework.PreSubmit(), Label("Disruptive"), Label("Serial"), func() {
+var _ = Describe("ControlPlaneMachineSet Operator", Label("Disruptive"), Label("Serial"), func() {
 	BeforeEach(func() {
+		InitializeTestFramework()
 		helpers.EventuallyClusterOperatorsShouldStabilise(1*time.Minute, 10*time.Minute, 10*time.Second)
 	}, OncePerOrdered)
 
@@ -76,7 +77,7 @@ var _ = Describe("ControlPlaneMachineSet Operator", framework.PreSubmit(), Label
 				// Machine name should follow prefixed naming convention
 				helpers.ItShouldRollingUpdateReplaceTheOutdatedMachine(framework.GlobalFramework, 1)
 
-				Context("and again MachineNamePrefix is reset", Ordered, func() {
+				Context("and again MachineNamePrefix is reset", framework.PreSubmit(), Ordered, func() {
 					BeforeAll(func() {
 						helpers.UpdateControlPlaneMachineSetMachineNamePrefix(framework.GlobalFramework, resetPrefix)
 						helpers.ModifyMachineProviderSpecToTriggerRollout(framework.GlobalFramework, 1)

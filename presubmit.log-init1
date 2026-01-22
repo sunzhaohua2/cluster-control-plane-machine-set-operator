@@ -1,0 +1,32 @@
+[
+  {
+    "name": "ControlPlaneMachineSet Operator With an active ControlPlaneMachineSet and the provider spec of index 1 is not as expected should rolling update replace the outdated machine",
+    "lifecycle": "blocking",
+    "duration": 8,
+    "startTime": "2026-01-22 07:41:09.787313 UTC",
+    "endTime": "2026-01-22 07:41:09.796124 UTC",
+    "result": "failed",
+    "output": "  STEP: Waiting for the cluster operators to stabilise (minimum availability time: 1m0s, timeout: 10m0s, polling interval: 10s) @ 01/22/26 15:41:09.791\n  [PANICKED] in [BeforeEach] - /Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24 @ 01/22/26 15:41:09.793\n",
+    "error": "\nsigs.k8s.io/controller-runtime/pkg/envtest/komega.checkDefaultClient(...)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24\nsigs.k8s.io/controller-runtime/pkg/envtest/komega.ObjectList(...)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:100\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers.EventuallyClusterOperatorsShouldStabilise(0xdf8475800, 0x8bb2c97000, 0x2540be400)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers/clusteroperators.go:44 +0x1205\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e.init.func2.1()\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/presubmit.go:37 +0x31\n\nfail [sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24]: Test Panicked: Default Komega's client is not set. Use SetClient to set it.\nfail [sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24]: Test Panicked"
+  },
+  {
+    "name": "ControlPlaneMachineSet Operator With an active ControlPlaneMachineSet with the OnDelete update strategy and the provider spec of index 2 is not as expected should replace the outdated machine when deleted",
+    "lifecycle": "blocking",
+    "duration": 8,
+    "startTime": "2026-01-22 07:41:09.784643 UTC",
+    "endTime": "2026-01-22 07:41:09.793538 UTC",
+    "result": "failed",
+    "output": "  STEP: Waiting for the cluster operators to stabilise (minimum availability time: 1m0s, timeout: 10m0s, polling interval: 10s) @ 01/22/26 15:41:09.788\n  [PANICKED] in [BeforeEach] - /Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24 @ 01/22/26 15:41:09.79\n",
+    "error": "\nsigs.k8s.io/controller-runtime/pkg/envtest/komega.checkDefaultClient(...)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24\nsigs.k8s.io/controller-runtime/pkg/envtest/komega.ObjectList(...)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:100\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers.EventuallyClusterOperatorsShouldStabilise(0xdf8475800, 0x8bb2c97000, 0x2540be400)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers/clusteroperators.go:44 +0x1205\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e.init.func2.1()\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/presubmit.go:37 +0x31\n\nfail [sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24]: Test Panicked: Default Komega's client is not set. Use SetClient to set it.\nfail [sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24]: Test Panicked"
+  },
+  {
+    "name": "ControlPlaneMachineSet Operator With an active ControlPlaneMachineSet with the OnDelete update strategy and the provider spec of index 2 is not as expected should not replace the outdated machine",
+    "lifecycle": "blocking",
+    "duration": 10,
+    "startTime": "2026-01-22 07:41:09.781775 UTC",
+    "endTime": "2026-01-22 07:41:09.791989 UTC",
+    "result": "failed",
+    "output": "  STEP: Waiting for the cluster operators to stabilise (minimum availability time: 1m0s, timeout: 10m0s, polling interval: 10s) @ 01/22/26 15:41:09.787\n  [PANICKED] in [BeforeEach] - /Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24 @ 01/22/26 15:41:09.789\n",
+    "error": "\nsigs.k8s.io/controller-runtime/pkg/envtest/komega.checkDefaultClient(...)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24\nsigs.k8s.io/controller-runtime/pkg/envtest/komega.ObjectList(...)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/vendor/sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:100\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers.EventuallyClusterOperatorsShouldStabilise(0xdf8475800, 0x8bb2c97000, 0x2540be400)\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers/clusteroperators.go:44 +0x1205\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e.init.func2.1()\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/presubmit.go:37 +0x31\n\nfail [sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24]: Test Panicked: Default Komega's client is not set. Use SetClient to set it.\nfail [sigs.k8s.io/controller-runtime/pkg/envtest/komega/default.go:24]: Test Panicked"
+  }
+]

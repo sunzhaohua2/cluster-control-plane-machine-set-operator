@@ -1,0 +1,32 @@
+[
+  {
+    "name": "ControlPlaneMachineSet Operator With an active ControlPlaneMachineSet and the provider spec of index 1 is not as expected should rolling update replace the outdated machine",
+    "lifecycle": "blocking",
+    "duration": 3395,
+    "startTime": "2026-01-22 07:50:09.426204 UTC",
+    "endTime": "2026-01-22 07:50:12.821970 UTC",
+    "result": "failed",
+    "output": "  STEP: Waiting for the cluster operators to stabilise (minimum availability time: 1m0s, timeout: 10m0s, polling interval: 10s) @ 01/22/26 15:50:11.242\n  STEP: Checking the control plane machine set exists @ 01/22/26 15:50:11.482\n  STEP: Checking the control plane machine set is active @ 01/22/26 15:50:11.704\n  STEP: Updating the provider spec of the control plane machine at index 1 @ 01/22/26 15:50:12.151\n  [PANICKED] in [It] - /usr/local/go/src/runtime/panic.go:262 @ 01/22/26 15:50:12.816\n",
+    "error": "\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e.init.func2.2.2.ItShouldRollingUpdateReplaceTheOutdatedMachine.2()\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers/cases.go:130 +0x3e\n\nfail [runtime/panic.go:262]: Test Panicked: runtime error: invalid memory address or nil pointer dereference\nfail [runtime/panic.go:262]: Test Panicked"
+  },
+  {
+    "name": "ControlPlaneMachineSet Operator With an active ControlPlaneMachineSet with the OnDelete update strategy and the provider spec of index 2 is not as expected should replace the outdated machine when deleted",
+    "lifecycle": "blocking",
+    "duration": 6276,
+    "startTime": "2026-01-22 07:50:09.426998 UTC",
+    "endTime": "2026-01-22 07:50:15.703896 UTC",
+    "result": "failed",
+    "output": "  STEP: Waiting for the cluster operators to stabilise (minimum availability time: 1m0s, timeout: 10m0s, polling interval: 10s) @ 01/22/26 15:50:11.24\n  STEP: Checking the control plane machine set exists @ 01/22/26 15:50:11.481\n  STEP: Checking the control plane machine set is active @ 01/22/26 15:50:11.699\n  STEP: Updating the control plane machine set strategy to OnDelete @ 01/22/26 15:50:12.135\n  STEP: Updating the provider spec of the control plane machine at index 2 @ 01/22/26 15:50:12.836\n  [PANICKED] in [It] - /usr/local/go/src/runtime/panic.go:262 @ 01/22/26 15:50:13.492\n  STEP: Updating the provider spec of the control plane machine at index 2 @ 01/22/26 15:50:13.494\n  STEP: Updating the control plane machine set strategy to RollingUpdate @ 01/22/26 15:50:14.825\n",
+    "error": "\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e.init.func2.2.4.3.ItShouldOnDeleteReplaceTheOutDatedMachineWhenDeleted.4()\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers/cases.go:216 +0x3e\n\nfail [runtime/panic.go:262]: Test Panicked: runtime error: invalid memory address or nil pointer dereference\nfail [runtime/panic.go:262]: Test Panicked"
+  },
+  {
+    "name": "ControlPlaneMachineSet Operator With an active ControlPlaneMachineSet with the OnDelete update strategy and the provider spec of index 2 is not as expected should not replace the outdated machine",
+    "lifecycle": "blocking",
+    "duration": 7040,
+    "startTime": "2026-01-22 07:50:09.430177 UTC",
+    "endTime": "2026-01-22 07:50:16.470919 UTC",
+    "result": "failed",
+    "output": "  STEP: Waiting for the cluster operators to stabilise (minimum availability time: 1m0s, timeout: 10m0s, polling interval: 10s) @ 01/22/26 15:50:11.242\n  STEP: Checking the control plane machine set exists @ 01/22/26 15:50:11.482\n  STEP: Checking the control plane machine set is active @ 01/22/26 15:50:11.701\n  STEP: Updating the control plane machine set strategy to OnDelete @ 01/22/26 15:50:12.137\n  STEP: Updating the provider spec of the control plane machine at index 2 @ 01/22/26 15:50:13.756\n  [PANICKED] in [It] - /usr/local/go/src/runtime/panic.go:262 @ 01/22/26 15:50:14.661\n  STEP: Updating the provider spec of the control plane machine at index 2 @ 01/22/26 15:50:14.662\n  STEP: Updating the control plane machine set strategy to RollingUpdate @ 01/22/26 15:50:15.549\n",
+    "error": "\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e.init.func2.2.4.3.ItShouldNotOnDeleteReplaceTheOutdatedMachine.3()\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers/cases.go:188 +0x2f\n\nfail [runtime/panic.go:262]: Test Panicked: runtime error: invalid memory address or nil pointer dereference\nfail [runtime/panic.go:262]: Test Panicked"
+  }
+]

@@ -17,24 +17,26 @@ limitations under the License.
 package e2e
 
 import (
-	"testing"
+	"sync"
 
-	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/framework"
+
+	"sigs.k8s.io/controller-runtime/pkg/envtest/komega"
 )
 
-func TestE2E(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "E2E Suite")
+var initOnce sync.Once
+
+// InitializeTestFramework initializes the global test framework.
+func InitializeTestFramework() {
+	initOnce.Do(func() {
+		if framework.GlobalFramework == nil {
+			err := framework.InitFramework()
+			Expect(err).NotTo(HaveOccurred(), "failed to initialize framework")
+		}
+
+		komega.SetClient(framework.GlobalFramework.GetClient())
+		komega.SetContext(framework.GlobalFramework.GetContext())
+	})
 }
-
-var _ = BeforeEach(func() {
-	InitializeTestFramework()
-
-	SetDefaultEventuallyTimeout(framework.DefaultTimeout)
-	SetDefaultEventuallyPollingInterval(framework.DefaultInterval)
-	SetDefaultConsistentlyDuration(framework.DefaultTimeout)
-	SetDefaultConsistentlyPollingInterval(framework.DefaultInterval)
-})

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "ControlPlaneMachineSet Operator With an active ControlPlaneMachineSet and ControlPlaneMachineSet is updated to set MachineNamePrefix [OCPFeatureGate:CPMSMachineNamePrefix] and the provider spec of index 1 is not as expected and again MachineNamePrefix is reset should rolling update replace the outdated machine",
+    "lifecycle": "blocking",
+    "duration": 175348,
+    "startTime": "2026-01-22 07:53:47.524966 UTC",
+    "endTime": "2026-01-22 07:56:42.873482 UTC",
+    "result": "failed",
+    "output": "  STEP: Waiting for the cluster operators to stabilise (minimum availability time: 1m0s, timeout: 10m0s, polling interval: 10s) @ 01/22/26 15:53:49.808\n  STEP: Checking the control plane machine set exists @ 01/22/26 15:56:38.473\n  STEP: Checking the control plane machine set is active @ 01/22/26 15:56:38.713\n  STEP: Updating the machine name prefix of the control plane machine set to \"master-prefix\" @ 01/22/26 15:56:39.473\n  STEP: Updating the provider spec of the control plane machine at index 1 @ 01/22/26 15:56:40.481\n  STEP: Un-setting the machine name prefix of the control plane machine set @ 01/22/26 15:56:40.97\n  STEP: Updating the provider spec of the control plane machine at index 1 @ 01/22/26 15:56:42.045\n  [PANICKED] in [It] - /usr/local/go/src/runtime/panic.go:262 @ 01/22/26 15:56:42.867\n",
+    "error": "\ngithub.com/openshift/cluster-control-plane-machine-set-operator/test/e2e.init.func2.2.3.2.2.ItShouldRollingUpdateReplaceTheOutdatedMachine.2()\n\t/Users/zhsun/go/src/github.com/openshift/cluster-control-plane-machine-set-operator/test/e2e/helpers/cases.go:130 +0x3e\n\nfail [runtime/panic.go:262]: Test Panicked: runtime error: invalid memory address or nil pointer dereference\nfail [runtime/panic.go:262]: Test Panicked"
+  }
+]
