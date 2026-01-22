@@ -1205,8 +1205,10 @@ var _ = Describe("With a running controller", func() {
 			BeforeEach(func() {
 				// The CPMS is configured for AWS so use the AWS Platform Type.
 				testFramework := framework.NewFrameworkWith(testScheme, k8sClient, configv1.AWSPlatformType, framework.Full, namespaceName)
+				// Set GlobalFramework so helpers can access it
+				framework.GlobalFramework = testFramework
 
-				helpers.ModifyControlPlaneMachineSetToTriggerRollout(testFramework, 10*time.Second, 1*time.Second)
+				helpers.ModifyControlPlaneMachineSetToTriggerRollout(10*time.Second, 1*time.Second)
 
 				testOptions.TestFramework = testFramework
 
@@ -1225,6 +1227,8 @@ var _ = Describe("With a running controller", func() {
 			BeforeEach(func() {
 				// The CPMS is configured for AWS so use the AWS Platform Type.
 				testFramework = framework.NewFrameworkWith(testScheme, k8sClient, configv1.AWSPlatformType, framework.Full, namespaceName)
+				// Set GlobalFramework so helpers can access it
+				framework.GlobalFramework = testFramework
 
 				machine := &machinev1beta1.Machine{}
 				machineName := fmt.Sprintf("master-%d", index)
@@ -1237,8 +1241,9 @@ var _ = Describe("With a running controller", func() {
 			})
 
 			It("should create a replacement machine for the correct index", func() {
-				helpers.EventuallyIndexIsBeingReplaced(ctx, testFramework, index)
+				helpers.EventuallyIndexIsBeingReplaced(ctx, index)
 			})
+
 		})
 	})
 
@@ -1665,7 +1670,7 @@ var _ = Describe("With a running controller and machine name prefix", func() {
 				// The CPMS is configured for AWS so use the AWS Platform Type.
 				testFramework := framework.NewFrameworkWith(testScheme, k8sClient, configv1.AWSPlatformType, framework.Full, namespaceName)
 
-				helpers.UpdateControlPlaneMachineSetMachineNamePrefix(testFramework, prefix, 10*time.Second, 1*time.Second)
+				helpers.UpdateControlPlaneMachineSetMachineNamePrefix(prefix, 10*time.Second, 1*time.Second)
 
 				testOptions.TestFramework = testFramework
 
@@ -1885,7 +1890,10 @@ var _ = Describe("With a running controller and machine name prefix", func() {
 				// The CPMS is configured for AWS so use the AWS Platform Type.
 				testFramework := framework.NewFrameworkWith(testScheme, k8sClient, configv1.AWSPlatformType, framework.Full, namespaceName)
 
-				helpers.UpdateControlPlaneMachineSetMachineNamePrefix(testFramework, prefix, 10*time.Second, 1*time.Second)
+				// Set GlobalFramework so helpers can access it
+				framework.GlobalFramework = testFramework
+
+				helpers.UpdateControlPlaneMachineSetMachineNamePrefix(prefix, 10*time.Second, 1*time.Second)
 
 				testOptions.TestFramework = testFramework
 
@@ -1953,7 +1961,7 @@ var _ = Describe("With a running controller and machine name prefix", func() {
 				})
 
 				It("should create a replacement machine for the correct index", func() {
-					helpers.EventuallyIndexIsBeingReplaced(ctx, testOptions.TestFramework, index)
+					helpers.EventuallyIndexIsBeingReplaced(ctx, index)
 				})
 
 				It("should only name the replacement machine with prefix", func() {

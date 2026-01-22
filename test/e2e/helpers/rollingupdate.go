@@ -33,10 +33,10 @@ import (
 
 // CheckRolloutForIndex first checks that a new machine is created in the correct index,
 // and then checks that the new machine in the index is replaced correctly.
-func CheckRolloutForIndex(testFramework framework.Framework, ctx context.Context, idx int, strategy machinev1.ControlPlaneMachineSetStrategyType) bool {
+func CheckRolloutForIndex(ctx context.Context, idx int, strategy machinev1.ControlPlaneMachineSetStrategyType) bool {
 	By(fmt.Sprintf("Waiting for the index %d to be replaced", idx))
 	// Don't provide additional timeouts here, the default should be enough.
-	if ok := EventuallyIndexIsBeingReplaced(ctx, testFramework, idx); !ok {
+	if ok := EventuallyIndexIsBeingReplaced(ctx, idx); !ok {
 		return false
 	}
 
@@ -45,11 +45,11 @@ func CheckRolloutForIndex(testFramework framework.Framework, ctx context.Context
 
 	switch strategy {
 	case machinev1.RollingUpdate:
-		if ok := CheckControlPlaneMachineRollingReplacement(testFramework, idx, ctx); !ok {
+		if ok := CheckControlPlaneMachineRollingReplacement(idx, ctx); !ok {
 			return false
 		}
 	case machinev1.OnDelete:
-		if ok := CheckControlPlaneMachineOnDeleteReplacement(testFramework, idx, ctx); !ok {
+		if ok := CheckControlPlaneMachineOnDeleteReplacement(idx, ctx); !ok {
 			return false
 		}
 	case machinev1.Recreate:
@@ -81,16 +81,16 @@ func CheckReplicasDoesNotExceedSurgeCapacity(ctx context.Context) bool {
 }
 
 // checkRolloutProgress monitors the progress of each index in the rollout in turn.
-func checkRolloutProgress(testFramework framework.Framework, ctx context.Context) bool {
-	if ok := CheckRolloutForIndex(testFramework, ctx, 0, machinev1.RollingUpdate); !ok {
+func checkRolloutProgress(ctx context.Context) bool {
+	if ok := CheckRolloutForIndex(ctx, 0, machinev1.RollingUpdate); !ok {
 		return false
 	}
 
-	if ok := CheckRolloutForIndex(testFramework, ctx, 1, machinev1.RollingUpdate); !ok {
+	if ok := CheckRolloutForIndex(ctx, 1, machinev1.RollingUpdate); !ok {
 		return false
 	}
 
-	if ok := CheckRolloutForIndex(testFramework, ctx, 2, machinev1.RollingUpdate); !ok {
+	if ok := CheckRolloutForIndex(ctx, 2, machinev1.RollingUpdate); !ok {
 		return false
 	}
 

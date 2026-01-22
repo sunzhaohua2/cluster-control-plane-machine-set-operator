@@ -56,8 +56,8 @@ var (
 // CheckControlPlaneMachineRollingReplacement checks that the machines with the given index
 // are being replaced in a rolling update style with the expected conditions.
 // This function explicitly takes a context which is expected to have a timeout in the parent scope.
-func CheckControlPlaneMachineRollingReplacement(testFramework framework.Framework, idx int, ctx context.Context) bool {
-	oldMachine, newMachine, ok := getOldAndNewMachineForIndex(ctx, testFramework, idx)
+func CheckControlPlaneMachineRollingReplacement(idx int, ctx context.Context) bool {
+	oldMachine, newMachine, ok := getOldAndNewMachineForIndex(ctx, idx)
 	if !ok {
 		return false
 	}
@@ -65,11 +65,11 @@ func CheckControlPlaneMachineRollingReplacement(testFramework framework.Framewor
 	// Check the machines name matches the expected format.
 	By("Checking the replacement machine name")
 
-	k8sClient := testFramework.GetClient()
+	k8sClient := framework.GlobalFramework.GetClient()
 	cpms := &machinev1.ControlPlaneMachineSet{}
-	Expect(k8sClient.Get(ctx, testFramework.ControlPlaneMachineSetKey(), cpms)).To(Succeed(), "control plane machine set should exist")
+	Expect(k8sClient.Get(ctx, framework.GlobalFramework.ControlPlaneMachineSetKey(), cpms)).To(Succeed(), "control plane machine set should exist")
 
-	currentFeatureGates, err := NewFeatureGateFilter(ctx, testFramework)
+	currentFeatureGates, err := NewFeatureGateFilter(ctx)
 	Expect(err).NotTo(HaveOccurred())
 	Expect(currentFeatureGates).NotTo(BeNil())
 
@@ -80,7 +80,7 @@ func CheckControlPlaneMachineRollingReplacement(testFramework framework.Framewor
 	By("Replacement machine name is correct")
 
 	// Check the the old machine doesn't have a deletion timestamp until the new machine is running.
-	if ok := waitForNewMachineRunning(ctx, testFramework, oldMachine, newMachine); !ok {
+	if ok := waitForNewMachineRunning(ctx, oldMachine, newMachine); !ok {
 		return false
 	}
 
@@ -105,8 +105,8 @@ func CheckControlPlaneMachineRollingReplacement(testFramework framework.Framewor
 // CheckControlPlaneMachineOnDeleteReplacement checks that the machines with the given index
 // are being replaced in a on delete style with the expected conditions.
 // This function explicitly takes a context which is expected to have a timeout in the parent scope.
-func CheckControlPlaneMachineOnDeleteReplacement(testFramework framework.Framework, idx int, ctx context.Context) bool {
-	oldMachine, newMachine, ok := getOldAndNewMachineForIndex(ctx, testFramework, idx)
+func CheckControlPlaneMachineOnDeleteReplacement(idx int, ctx context.Context) bool {
+	oldMachine, newMachine, ok := getOldAndNewMachineForIndex(ctx, idx)
 	if !ok {
 		return false
 	}
@@ -114,11 +114,11 @@ func CheckControlPlaneMachineOnDeleteReplacement(testFramework framework.Framewo
 	// Check the machines name matches the expected format.
 	By("Checking the replacement machine name")
 
-	k8sClient := testFramework.GetClient()
+	k8sClient := framework.GlobalFramework.GetClient()
 	cpms := &machinev1.ControlPlaneMachineSet{}
-	Expect(k8sClient.Get(ctx, testFramework.ControlPlaneMachineSetKey(), cpms)).To(Succeed(), "control plane machine set should exist")
+	Expect(k8sClient.Get(ctx, framework.GlobalFramework.ControlPlaneMachineSetKey(), cpms)).To(Succeed(), "control plane machine set should exist")
 
-	currentFeatureGates, err := NewFeatureGateFilter(ctx, testFramework)
+	currentFeatureGates, err := NewFeatureGateFilter(ctx)
 	Expect(err).NotTo(HaveOccurred())
 	Expect(currentFeatureGates).NotTo(BeNil())
 
@@ -149,9 +149,9 @@ func CheckControlPlaneMachineOnDeleteReplacement(testFramework framework.Framewo
 // a replacement Machine.
 // It simultaneously checks that no other index is being replaced, this short circuits
 // what otherwise could be a long wait.
-func EventuallyIndexIsBeingReplaced(ctx context.Context, testFramework framework.Framework, idx int) bool {
+func EventuallyIndexIsBeingReplaced(ctx context.Context, idx int) bool {
 	controlPlaneMachineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
-	k8sClient := testFramework.GetClient()
+	k8sClient := framework.GlobalFramework.GetClient()
 
 	// Wait for the replacement machine to be created.
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Minute)
@@ -232,9 +232,9 @@ func machineIndex(machine machinev1beta1.Machine) (int, error) {
 }
 
 // getOldAndNewMachineForIndex lists and extracts the old and replacement machines for a given index.
-func getOldAndNewMachineForIndex(ctx context.Context, testFramework framework.Framework, idx int) (*machinev1beta1.Machine, *machinev1beta1.Machine, bool) {
+func getOldAndNewMachineForIndex(ctx context.Context, idx int) (*machinev1beta1.Machine, *machinev1beta1.Machine, bool) {
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
-	k8sClient := testFramework.GetClient()
+	k8sClient := framework.GlobalFramework.GetClient()
 
 	machineList := &machinev1beta1.MachineList{}
 	if ok := Expect(k8sClient.List(ctx, machineList, machineSelector)).To(Succeed(), "should be able to list machines"); !ok {
@@ -307,9 +307,9 @@ func checkReplacementMachineName(machine *machinev1beta1.Machine, cpms *machinev
 // While it checks this, it also checks that the old Machine does not get a deletion timestamp.
 // During a rolling update we expect the old machine to only be deleted after the new Machine
 // becomes running.
-func waitForNewMachineRunning(ctx context.Context, testFramework framework.Framework, oldMachine, newMachine *machinev1beta1.Machine) bool {
+func waitForNewMachineRunning(ctx context.Context, oldMachine, newMachine *machinev1beta1.Machine) bool {
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
-	k8sClient := testFramework.GetClient()
+	k8sClient := framework.GlobalFramework.GetClient()
 
 	By("Waiting for the new machine become Running")
 	By("Checking that the old machine is not deleted until the new machine is Running")
@@ -355,7 +355,7 @@ func waitForNewMachineRunning(ctx context.Context, testFramework framework.Frame
 
 // ExpectControlPlaneMachinesAllRunning checks that all the control plane machines
 // are in running phase.
-func ExpectControlPlaneMachinesAllRunning(testFramework framework.Framework) {
+func ExpectControlPlaneMachinesAllRunning() {
 	By("Checking the control plane machines are all in running phase")
 
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
@@ -369,7 +369,7 @@ func ExpectControlPlaneMachinesAllRunning(testFramework framework.Framework) {
 
 // ExpectControlPlaneMachinesNotOwned checks that none of the control plane machines
 // have owner references.
-func ExpectControlPlaneMachinesNotOwned(testFramework framework.Framework) {
+func ExpectControlPlaneMachinesNotOwned() {
 	By("Checking that none of the control plane machines have owner references")
 
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
@@ -383,7 +383,7 @@ func ExpectControlPlaneMachinesNotOwned(testFramework framework.Framework) {
 
 // ExpectControlPlaneMachinesWithoutDeletionTimestamp checks that none of the control plane machines
 // has a deletion timestamp.
-func ExpectControlPlaneMachinesWithoutDeletionTimestamp(testFramework framework.Framework) {
+func ExpectControlPlaneMachinesWithoutDeletionTimestamp() {
 	By("Checking that none of the control plane machines have a deletion timestamp")
 
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
@@ -397,7 +397,7 @@ func ExpectControlPlaneMachinesWithoutDeletionTimestamp(testFramework framework.
 
 // ConsistentlyControlPlaneMachinesWithoutDeletionTimestamp checks that none of the control plane machines
 // have a deletion timestamp, consistently.
-func ConsistentlyControlPlaneMachinesWithoutDeletionTimestamp(testFramework framework.Framework) {
+func ConsistentlyControlPlaneMachinesWithoutDeletionTimestamp() {
 	By("Checking that none of the control plane machines have a deletion timestamp")
 
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
@@ -411,7 +411,7 @@ func ConsistentlyControlPlaneMachinesWithoutDeletionTimestamp(testFramework fram
 
 // ExpectControlPlaneMachinesOwned checks that all of the control plane machines
 // have owner references.
-func ExpectControlPlaneMachinesOwned(testFramework framework.Framework) {
+func ExpectControlPlaneMachinesOwned() {
 	By("Checking that all of the control plane machines have owner references")
 
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
@@ -427,14 +427,14 @@ func ExpectControlPlaneMachinesOwned(testFramework framework.Framework) {
 // control plane machine with the given index. This modification must trigger
 // the control plane machine set to update the machine in this index based on
 // the update strategy. An example would be changing the instance size.
-func ModifyMachineProviderSpecToTriggerRollout(testFramework framework.Framework, index int, gomegaArgs ...interface{}) (machinev1beta1.ProviderSpec, machinev1beta1.ProviderSpec) {
-	machine, err := machineForIndex(testFramework, index)
+func ModifyMachineProviderSpecToTriggerRollout(index int, gomegaArgs ...interface{}) (machinev1beta1.ProviderSpec, machinev1beta1.ProviderSpec) {
+	machine, err := machineForIndex(index)
 	Expect(err).ToNot(HaveOccurred(), "control plane machine should exist")
 
 	originalProviderSpec := machine.Spec.ProviderSpec
 	updatedProviderSpec := originalProviderSpec.DeepCopy()
 
-	Expect(testFramework.ModifyProviderSpecToTriggerRollout(updatedProviderSpec.Value)).To(Succeed(), "provider spec should be updated")
+	Expect(framework.GlobalFramework.ModifyProviderSpecToTriggerRollout(updatedProviderSpec.Value)).To(Succeed(), "provider spec should be updated")
 
 	By(fmt.Sprintf("Updating the provider spec of the control plane machine at index %d", index))
 
@@ -447,10 +447,10 @@ func ModifyMachineProviderSpecToTriggerRollout(testFramework framework.Framework
 
 // UpdateControlPlaneMachineProviderSpec updates the provider spec of the control plane machine in the given index
 // to match the provider spec given.
-func UpdateControlPlaneMachineProviderSpec(testFramework framework.Framework, index int, updatedProviderSpec machinev1beta1.ProviderSpec, gomegaArgs ...interface{}) {
+func UpdateControlPlaneMachineProviderSpec(index int, updatedProviderSpec machinev1beta1.ProviderSpec, gomegaArgs ...interface{}) {
 	By(fmt.Sprintf("Updating the provider spec of the control plane machine at index %d", index))
 
-	machine, err := machineForIndex(testFramework, index)
+	machine, err := machineForIndex(index)
 	Expect(err).ToNot(HaveOccurred(), "control plane machine should exist")
 
 	Eventually(komega.Update(machine, func() {
@@ -462,23 +462,23 @@ func UpdateControlPlaneMachineProviderSpec(testFramework framework.Framework, in
 // the newest control plane machine. This modification must trigger the control
 // plane machine set to update the machine in this index based on the update
 // strategy. An example would be changing the instance size.
-func ModifyNewestMachineProviderSpecToTriggerRollout(testFramework framework.Framework, gomegaArgs ...interface{}) (int, machinev1beta1.ProviderSpec, machinev1beta1.ProviderSpec) {
-	index, err := newestMachineIndex(testFramework)
+func ModifyNewestMachineProviderSpecToTriggerRollout(gomegaArgs ...interface{}) (int, machinev1beta1.ProviderSpec, machinev1beta1.ProviderSpec) {
+	index, err := newestMachineIndex()
 	Expect(err).ToNot(HaveOccurred(), "control plane newest machine index should be found")
 
-	originalProviderSpec, updatedProviderSpec := ModifyMachineProviderSpecToTriggerRollout(testFramework, index)
+	originalProviderSpec, updatedProviderSpec := ModifyMachineProviderSpecToTriggerRollout(index)
 
 	return index, originalProviderSpec, updatedProviderSpec
 }
 
 // newestMachineIndex returns the index of the newest (latest .metadata.creationTimestamp) control plane machine.
 // If multiple machines have the same creationTimestamp, the index of the one with the alphabetically greater name is picked.
-func newestMachineIndex(testFramework framework.Framework) (int, error) {
+func newestMachineIndex() (int, error) {
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
 	machineList := &machinev1beta1.MachineList{}
 
-	ctx := testFramework.GetContext()
-	k8sClient := testFramework.GetClient()
+	ctx := framework.GlobalFramework.GetContext()
+	k8sClient := framework.GlobalFramework.GetClient()
 
 	if err := k8sClient.List(ctx, machineList, machineSelector); err != nil {
 		return 0, fmt.Errorf("could not list control plane machines: %w", err)
@@ -498,12 +498,12 @@ func newestMachineIndex(testFramework framework.Framework) (int, error) {
 // machineForIndex returns the control plane machine in the given index.
 // If multiple machines exist within the index, an error is returned.
 // Only use this when you expect exactly one machine in the index.
-func machineForIndex(testFramework framework.Framework, index int) (*machinev1beta1.Machine, error) {
+func machineForIndex(index int) (*machinev1beta1.Machine, error) {
 	machineSelector := runtimeclient.MatchingLabels(framework.ControlPlaneMachineSetSelectorLabels())
 	machineList := &machinev1beta1.MachineList{}
 
-	ctx := testFramework.GetContext()
-	k8sClient := testFramework.GetClient()
+	ctx := framework.GlobalFramework.GetContext()
+	k8sClient := framework.GlobalFramework.GetClient()
 
 	if err := k8sClient.List(ctx, machineList, machineSelector); err != nil {
 		return nil, fmt.Errorf("could not list control plane machines: %w", err)

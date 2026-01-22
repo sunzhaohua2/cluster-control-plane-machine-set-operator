@@ -32,6 +32,7 @@ import (
 
 var _ = Describe("ControlPlaneMachineSet Operator", framework.Periodic(), Label("Disruptive"), Label("Serial"), func() {
 	BeforeEach(func() {
+		InitializeTestFramework()
 		helpers.EventuallyClusterOperatorsShouldStabilise(1*time.Minute, 10*time.Minute, 10*time.Second)
 	}, OncePerOrdered)
 
@@ -57,7 +58,7 @@ var _ = Describe("ControlPlaneMachineSet Operator", framework.Periodic(), Label(
 			BeforeEach(func() {
 				// Check if CPMSMachineNamePrefix gate is enabled, skip otherwise.
 				// The TechPreview jobs should not skip the test.
-				featureGateFilter, err := helpers.NewFeatureGateFilter(context.TODO(), framework.GlobalFramework)
+				featureGateFilter, err := helpers.NewFeatureGateFilter(context.TODO())
 				if err != nil {
 					Fail(fmt.Sprintf("failed to get featuregate filter: %v", err))
 				}
@@ -65,25 +66,25 @@ var _ = Describe("ControlPlaneMachineSet Operator", framework.Periodic(), Label(
 					Skip(fmt.Sprintf("Skipping test because %q featuregate is not enabled", features.FeatureGateCPMSMachineNamePrefix))
 				}
 
-				helpers.UpdateControlPlaneMachineSetMachineNamePrefix(framework.GlobalFramework, prefix)
+				helpers.UpdateControlPlaneMachineSetMachineNamePrefix(prefix)
 			}, OncePerOrdered)
 
 			Context("and the provider spec of index 1 is not as expected", Ordered, func() {
 				BeforeAll(func() {
-					helpers.ModifyMachineProviderSpecToTriggerRollout(framework.GlobalFramework, 1)
+					helpers.ModifyMachineProviderSpecToTriggerRollout(1)
 				})
 
 				// Machine name should follow prefixed naming convention
-				helpers.ItShouldRollingUpdateReplaceTheOutdatedMachine(framework.GlobalFramework, 1)
+				helpers.ItShouldRollingUpdateReplaceTheOutdatedMachine(1)
 
 				Context("and again MachineNamePrefix is reset", Ordered, func() {
 					BeforeAll(func() {
-						helpers.UpdateControlPlaneMachineSetMachineNamePrefix(framework.GlobalFramework, resetPrefix)
-						helpers.ModifyMachineProviderSpecToTriggerRollout(framework.GlobalFramework, 1)
+						helpers.UpdateControlPlaneMachineSetMachineNamePrefix(resetPrefix)
+						helpers.ModifyMachineProviderSpecToTriggerRollout(1)
 					})
 
 					// Machine name should follow general naming convention
-					helpers.ItShouldRollingUpdateReplaceTheOutdatedMachine(framework.GlobalFramework, 1)
+					helpers.ItShouldRollingUpdateReplaceTheOutdatedMachine(1)
 				})
 			})
 		})
@@ -92,11 +93,11 @@ var _ = Describe("ControlPlaneMachineSet Operator", framework.Periodic(), Label(
 			var originalStrategy machinev1.ControlPlaneMachineSetStrategyType
 
 			BeforeEach(func() {
-				originalStrategy = helpers.EnsureControlPlaneMachineSetUpdateStrategy(framework.GlobalFramework, machinev1.OnDelete)
+				originalStrategy = helpers.EnsureControlPlaneMachineSetUpdateStrategy(machinev1.OnDelete)
 			}, OncePerOrdered)
 
 			AfterEach(func() {
-				helpers.EnsureControlPlaneMachineSetUpdateStrategy(framework.GlobalFramework, originalStrategy)
+				helpers.EnsureControlPlaneMachineSetUpdateStrategy(originalStrategy)
 			}, OncePerOrdered)
 
 			Context("and ControlPlaneMachineSet is updated to set MachineNamePrefix [OCPFeatureGate:CPMSMachineNamePrefix]", Ordered, func() {
@@ -106,7 +107,7 @@ var _ = Describe("ControlPlaneMachineSet Operator", framework.Periodic(), Label(
 				BeforeEach(func() {
 					// Check if CPMSMachineNamePrefix gate is enabled, skip otherwise.
 					// The TechPreview jobs should not skip the test.
-					featureGateFilter, err := helpers.NewFeatureGateFilter(context.TODO(), framework.GlobalFramework)
+					featureGateFilter, err := helpers.NewFeatureGateFilter(context.TODO())
 					if err != nil {
 						Fail(fmt.Sprintf("failed to get featuregate filter: %v", err))
 					}
@@ -114,35 +115,35 @@ var _ = Describe("ControlPlaneMachineSet Operator", framework.Periodic(), Label(
 						Skip(fmt.Sprintf("Skipping test because %q featuregate is not enabled", features.FeatureGateCPMSMachineNamePrefix))
 					}
 
-					helpers.UpdateControlPlaneMachineSetMachineNamePrefix(framework.GlobalFramework, prefix)
+					helpers.UpdateControlPlaneMachineSetMachineNamePrefix(prefix)
 				}, OncePerOrdered)
 
 				Context("and the provider spec of index 2 is not as expected", Ordered, func() {
 					var originalProviderSpec machinev1beta1.ProviderSpec
 
 					BeforeAll(func() {
-						originalProviderSpec, _ = helpers.ModifyMachineProviderSpecToTriggerRollout(framework.GlobalFramework, 2)
+						originalProviderSpec, _ = helpers.ModifyMachineProviderSpecToTriggerRollout(2)
 					})
 
 					AfterAll(func() {
-						helpers.UpdateControlPlaneMachineProviderSpec(framework.GlobalFramework, 2, originalProviderSpec)
+						helpers.UpdateControlPlaneMachineProviderSpec(2, originalProviderSpec)
 					})
 
-					helpers.ItShouldNotOnDeleteReplaceTheOutdatedMachine(framework.GlobalFramework, 2)
+					helpers.ItShouldNotOnDeleteReplaceTheOutdatedMachine(2)
 
 					// Machine name should follow prefixed naming convention
-					helpers.ItShouldOnDeleteReplaceTheOutDatedMachineWhenDeleted(framework.GlobalFramework, 2)
+					helpers.ItShouldOnDeleteReplaceTheOutDatedMachineWhenDeleted(2)
 
 					Context("and again MachineNamePrefix is reset", Ordered, func() {
 						BeforeAll(func() {
-							helpers.UpdateControlPlaneMachineSetMachineNamePrefix(framework.GlobalFramework, resetPrefix)
-							helpers.ModifyMachineProviderSpecToTriggerRollout(framework.GlobalFramework, 2)
+							helpers.UpdateControlPlaneMachineSetMachineNamePrefix(resetPrefix)
+							helpers.ModifyMachineProviderSpecToTriggerRollout(2)
 						})
 
-						helpers.ItShouldNotOnDeleteReplaceTheOutdatedMachine(framework.GlobalFramework, 2)
+						helpers.ItShouldNotOnDeleteReplaceTheOutdatedMachine(2)
 
 						// Machine name should follow general naming convention
-						helpers.ItShouldOnDeleteReplaceTheOutDatedMachineWhenDeleted(framework.GlobalFramework, 2)
+						helpers.ItShouldOnDeleteReplaceTheOutDatedMachineWhenDeleted(2)
 					})
 				})
 			})

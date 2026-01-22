@@ -38,8 +38,8 @@ type featureGateFilter struct {
 }
 
 // NewFeatureGateFilter creates a new featureGateFilter from the cluster's FeatureGate.
-func NewFeatureGateFilter(ctx context.Context, testFramework framework.Framework) (*featureGateFilter, error) {
-	k8sClient := testFramework.GetClient()
+func NewFeatureGateFilter(ctx context.Context) (*featureGateFilter, error) {
+	k8sClient := framework.GlobalFramework.GetClient()
 
 	featureGate := &configv1.FeatureGate{}
 	if err := k8sClient.Get(ctx, types.NamespacedName{Name: "cluster"}, featureGate); err != nil {
