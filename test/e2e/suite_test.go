@@ -17,6 +17,7 @@ limitations under the License.
 package e2e
 
 import (
+	"sync"
 	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -27,26 +28,43 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/envtest/komega"
 )
 
+var initOnce sync.Once
+
 func TestE2E(t *testing.T) {
 	RegisterFailHandler(Fail)
-
-	g := NewGomegaWithT(t)
-
-	// Set up the test framework.
-	err := framework.InitFramework()
-	g.Expect(err).NotTo(HaveOccurred(), "failed to set up test framework")
-
 	RunSpecs(t, "E2E Suite")
 }
 
 var _ = BeforeSuite(func() {
-	Expect(framework.GlobalFramework).ToNot(BeNil(), "test framework should not be nil")
+	initOnce.Do(func() {
+		if framework.GlobalFramework == nil {
+			err := framework.InitFramework()
+			Expect(err).NotTo(HaveOccurred(), "failed to initialize framework")
+		}
 
-	komega.SetClient(framework.GlobalFramework.GetClient())
-	komega.SetContext(framework.GlobalFramework.GetContext())
+		komega.SetClient(framework.GlobalFramework.GetClient())
+		komega.SetContext(framework.GlobalFramework.GetContext())
 
-	SetDefaultEventuallyTimeout(framework.DefaultTimeout)
-	SetDefaultEventuallyPollingInterval(framework.DefaultInterval)
-	SetDefaultConsistentlyDuration(framework.DefaultTimeout)
-	SetDefaultConsistentlyPollingInterval(framework.DefaultInterval)
+		SetDefaultEventuallyTimeout(framework.DefaultTimeout)
+		SetDefaultEventuallyPollingInterval(framework.DefaultInterval)
+		SetDefaultConsistentlyDuration(framework.DefaultTimeout)
+		SetDefaultConsistentlyPollingInterval(framework.DefaultInterval)
+	})
+})
+
+var _ = BeforeEach(func() {
+	initOnce.Do(func() {
+		if framework.GlobalFramework == nil {
+			err := framework.InitFramework()
+			Expect(err).NotTo(HaveOccurred(), "failed to initialize framework")
+		}
+
+		komega.SetClient(framework.GlobalFramework.GetClient())
+		komega.SetContext(framework.GlobalFramework.GetContext())
+
+		SetDefaultEventuallyTimeout(framework.DefaultTimeout)
+		SetDefaultEventuallyPollingInterval(framework.DefaultInterval)
+		SetDefaultConsistentlyDuration(framework.DefaultTimeout)
+		SetDefaultConsistentlyPollingInterval(framework.DefaultInterval)
+	})
 })
